@@ -1,0 +1,9 @@
+{
+  "name": "nodeRestApi",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "^2.2.3",
+    "requirejs": "^2.2.0",
+    "underscore": "^1.8.3"
+  }
+}
