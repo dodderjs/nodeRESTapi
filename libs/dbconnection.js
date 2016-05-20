@@ -1,6 +1,6 @@
 var config = require('../configs').db;
 var mysql = require('mysql');
-var logger = require('./debug');
+var errorHandler = require('./errorHandler');
 
 var poolRead = mysql.createPool(config.read);
 var poolWrite = mysql.createPool(config.write);

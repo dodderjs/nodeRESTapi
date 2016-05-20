@@ -1,13 +1,19 @@
 var winston = require('winston');
 var DailyRotateFile = require('winston-daily-rotate-file');
 var path = require('path');
-var config = require('../config').debug;
+var config = require('../configs').debug;
 var _ = require('lodash');
 
 var logPath = path.join(__dirname, '../' + config.dirname);
+var transports = [new winston.transports.Console({
+	level: 'debug',
+	prettyPrint: true,
+	colorize: true,
+	silent: false,
+})];
 
-var logger = new (winston.Logger)({
-	transports: [		
+if (config.env === 'production') {
+	transports = [		
 		new DailyRotateFile({ 
 			name: config.level + '-log',
 			filename: path.join(logPath, config.level + '.log'),
@@ -23,7 +29,11 @@ var logger = new (winston.Logger)({
 			humanReadableUnhandledException: true,
 			handleExceptions: true
 		})
-	]
+	];
+}
+
+var logger = new (winston.Logger)({
+	transports: transports
 });
 
 //module.exports = logger.log.bind(logger);

@@ -7,9 +7,9 @@ module.exports = function (error, callback, message, data) {
 		message = '';
 	}
 	if (data) {
-		logger.error(message + (message ? ' - ' : '') 'Error message: %j \nData: %j', error, data);
+		logger.error(message + (message ? ' - ' : '') + 'Error message: %j \nData: %j', error, data);
 	} else {
-		logger.error(message + (message ? ' - ' : '') 'Error message: %j', error);
+		logger.error(message + (message ? ' - ' : '') + 'Error message: %j', error);
 	}
-	return callback();
+	return callback(error);
 }
