@@ -17,21 +17,11 @@ var defaults = {
 	},
 
 	db: {
-		read: {
 		host: 'localhost',
 		user: '',
 		password: '',
 		database: '',
 		connectionLimit : 100
-		},
-
-		write: {
-			host: 'localhost',
-			user: '',
-			password: '',
-			database: '',
-			connectionLimit : 100
-		}
 	},
 
 	auth: {

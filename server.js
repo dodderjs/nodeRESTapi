@@ -2,13 +2,19 @@ var app = require('./app');
 var logger = require('./libs/debug');
 var http = require('http');
 var config = require('./configs');
-var server = http.createServer(app);
+var models = require('./models');
 
 app.set('port', config.port);
 
-server.listen(config.port);
-server.on('error', onError);
-server.on('listening', onListening);
+var server = http.createServer(app);
+
+models.sequelize
+	.sync()
+	.then(function () {
+		server.listen(config.port);
+		server.on('error', onError);
+		server.on('listening', onListening);
+	});
 
 /**
  * Event listener for HTTP server "error" event.

@@ -1,7 +1,7 @@
 var config = require('../configs');
 var jwt = require('jsonwebtoken');
 var compose = require('composable-middleware');
-var User = require('../models/user');
+var models = require('../models');
 var validateJwt = require('express-jwt')({ secret: config.secret.session });
 
 /**
@@ -20,13 +20,17 @@ function isAuthenticated () {
 		})
 		// Attach user to request
 		.use(function(req, res, next) {
-			User.findOne({ id: req.user.id }, function (err, user) {
-				if (err) return next(err);
-				if (!user) return res.send(401);
+			models.users
+				.findOne({
+					where: { id: req.user.id }
+				})
+				.then(function (user) {
+					if (!user) return res.send(401);
 
-				req.user = user;
-				next();
-			});
+					req.user = user;
+					next();
+				})
+				.catch(next);
 		});
 }
 /**
@@ -43,8 +47,8 @@ function setTokenCookie (req, res, next) {
 	if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.'});
 	var token = signToken(req.user.id);
 	res.cookie('token', token);
-	//res.redirect('/');
-	res.json({ token: token });
+	res.redirect('/user/me');
+	//res.json({ token: token });
 }
 
 module.exports = {

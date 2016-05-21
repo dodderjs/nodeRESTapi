@@ -2,7 +2,7 @@ var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var config = require('../configs');
-var User = require('../models/user');
+var models = require('../models');
 
 function google () {
 	passport.use(new GoogleStrategy({
@@ -11,27 +11,37 @@ function google () {
 			callbackURL: config.auth.google.callbackURL
 		},
 		function(accessToken, refreshToken, profile, done) {
-			User.findOne({
-				'provider': 'google',
-				'id': profile.id
-			}, function(err, user) {
-				if (!user) {
-					user = User.create({
-						id: profile.id,
-						name: profile.displayName,
-						email: profile.emails[0].value,
-						image: profile.photos[0].value || null,
-						token: accessToken,
-						provider: 'google',
-						google: profile._json
-					}, function(err) {
-						if (err) done(err);
-						return done(err, user);
-					});
-				} else {
-					return done(err, user);
-				}
-			});
+			models.users
+				.findOne({
+					include: [{
+						model: models.users_google,
+						where: { id: profile.id }
+					}
+				]})
+				.then(function (user) {
+					if (!user) {
+						models.users.create({
+							name: profile.displayName,
+							email: profile.emails[0].value,
+							image: profile.photos[0].value || null,
+							provider: 'google',
+							users_google: {
+								id: profile.id, 
+								token: accessToken,
+								json: JSON.stringify(profile._json)
+							}}, {
+							  include: [ models.users_google ]
+							})
+						.then(function (user) {
+							console.log(user.get({plain: true}))
+							done(null, user)
+						})
+						.catch(done)
+					} else {
+						return done(null, user);
+					}
+				})
+				.catch(done);
 		}
 	));
 };
@@ -44,30 +54,44 @@ function facebook () {
   			profileFields: ['id', 'displayName', 'picture', 'email']
 		},
 		function(accessToken, refreshToken, profile, done) {
-			User.findOne({
-				'provider': 'facebook',
-				'id': profile.id
-			}, function(err, user) {
-				if (!user) {
-					user = User.create({
-						id: profile.id,
-						name: profile.displayName,
-						email: profile.emails && profile.emails[0].value,
-						image: profile.photos && profile.photos[0].value || null,
-						token: accessToken,
-						provider: 'facebook',
-						facebook: profile._json
-					}, function(err) {
-						if (err) done(err);
-						return done(err, user);
-					});
-				} else {
-					return done(err, user);
-				}
-			});
+			models.users
+				.findOne({ 
+					include: [{
+						model: models.users_facebook,
+						where: { id: profile.id }
+					}
+				]})
+				.then(function (user) {
+					if (!user) {
+						models.users.create({
+							name: profile.displayName,
+							email: profile.emails[0].value,
+							image: profile.photos[0].value || null,
+							provider: 'facebook',
+							users_facebook: {
+								id: profile.id, 
+								token: accessToken,
+								json: JSON.stringify(profile._json)
+							}}, {
+							  include: [ models.users_facebook ]
+							})
+						.then(function (user) {
+							console.log(user.get({plain: true}))
+							done(null, user)
+						})
+						.catch(done)
+					} else {
+						return done(null, user);
+					}
+				})
+				.catch(done);
 		}
 	));
 };
+
+function getProviderData () {
+
+}
 
 module.exports = {
 	google: google,
