@@ -6,9 +6,7 @@ var authSetup = require('../auth');
 authSetup.facebook();
 authSetup.google();
 
-function setup (app) {
-
-	app.use('/user', user);  	
+function setup (app) {app.use('/user', user);  	
 	app.use('/auth/google', google);
 	app.use('/auth/facebook', facebook);
 	

@@ -16,13 +16,7 @@ module.exports = function(sequelize, DataTypes) {
 		underscored: true,
 		classMethods: {
 			associate: function(models) {
-				users_facebook.belongsTo(models.users, {
-					onUpdate: 'CASCADE',
-					onDelete: 'CASCADE',
-					foreignKey: {
-						allowNull: false
-					}
-				});
+				users_facebook.belongsTo(models.users);
 			}
 		}
 	});

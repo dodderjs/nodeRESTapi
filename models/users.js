@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		email: {
 			type: DataTypes.STRING,
-			unique: 'email',
+			unique: true,
 			allowNull: false,
 			validate: {
 				isEmail: true
@@ -28,8 +28,22 @@ module.exports = function(sequelize, DataTypes) {
 		underscored: true,
 		classMethods: {
 			associate: function(models) {
-				users.hasOne(models.users_google, { foreignKey: 'user_id' });
-				users.hasOne(models.users_facebook, { foreignKey: 'user_id' });
+				users.hasOne(models.users_google, {
+					onUpdate: 'CASCADE',
+					onDelete: 'CASCADE',
+					foreignKey: {
+						name: 'user_id',
+						allowNull: false
+					}
+				});
+				users.hasOne(models.users_facebook, {
+					onUpdate: 'CASCADE',
+					onDelete: 'CASCADE',
+					foreignKey: {
+						name: 'user_id',
+						allowNull: false
+					}
+				});
 			}
 		}
 	});

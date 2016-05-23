@@ -1,4 +1,4 @@
-# Node REST Api base/try
+# Movie REST Api - Nodejs server example / study
 
 Install dependencies:
 `npm install`
@@ -6,4 +6,3 @@ Install dependencies:
 
 To start server:
 `node server`
-

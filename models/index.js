@@ -18,10 +18,11 @@ var db = {};
 fs
   .readdirSync(__dirname)
   .filter(function(file) {
-  	console.log(file, file.startsWith('_'));
-    return (!file.startsWith('_') && file.indexOf('.') !== 0) && (file !== 'index.js');
+    console.log(file, file.startsWith('.'))
+    return (!file.startsWith('_') && !file.startsWith('.') && file !== 'index.js');
   })
   .forEach(function(file) {
+    console.log(file)
   	var model = sequelize.import(path.join(__dirname, file));
     db[model.name] = model;
   });
