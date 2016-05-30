@@ -6,7 +6,15 @@ var authSetup = require('../auth');
 authSetup.facebook();
 authSetup.google();
 
-function setup (app) {app.use('/user', user);  	
+function setup (app) {
+	app.use('/user', user);
+
+	app.use('/auth', function (req, res, next) {
+		if (req.query.callbackUrl) {
+			req.session.callbackUrl = req.query.callbackUrl;
+		}
+		next();
+	});
 	app.use('/auth/google', google);
 	app.use('/auth/facebook', facebook);
 	

@@ -108,6 +108,7 @@ var defaults = {
 		level: 'error'
 	}
 };
+
 var env_configs = require('./' + process.env.NODE_ENV + '.js');
 
 module.exports = _.merge(
