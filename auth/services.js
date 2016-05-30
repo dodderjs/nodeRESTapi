@@ -45,12 +45,12 @@ function signToken (id) {
  */
 function setTokenCookie (req, res, next) {
 	if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.'});
+	var returnUrl = req.query.state && JSON.parse(req.query.state).callbackUrl;
 	var token = signToken(req.user.id);
+
 	res.cookie('token', token);
-	var returnUrl = req.session.callbackUrl;
 	
 	if (returnUrl) {
-		delete req.session.callbackUrl;	
 		res.redirect(returnUrl);
 	} else {
 		res.json({
