@@ -7,7 +7,7 @@ var router = express.Router();
 router
 	.get('/', function (req, res, next) {
 		passport.authenticate('google', {
-			failureRedirect: '/',
+			failureRedirect: req.query.callbackUrl,
 			scope: [
 				'https://www.googleapis.com/auth/userinfo.profile',
 				'https://www.googleapis.com/auth/userinfo.email'
